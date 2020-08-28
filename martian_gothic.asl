@@ -7,7 +7,7 @@ state("martian gothic") {}
 startup
 {
     vars.splits = new ExpandoObject();
-	vars.splits.startgame = false;
+    vars.splits.startgame = false;
     vars.splits.endgame = false;
 
     settings.Add("events", true, "Events");
@@ -42,22 +42,22 @@ update
 
     if (timer.CurrentPhase == TimerPhase.NotRunning)
     {
-		vars.splits.startgame = false;
+        vars.splits.startgame = false;
         vars.splits.endgame = false;
     }
 }
 
 split
 {
-	if (!vars.splits.startgame)
-		vars.splits.startgame = current.switches == 1;
+    if (!vars.splits.startgame)
+        vars.splits.startgame = current.switches == 1;
 
-	if (vars.splits.startgame)
-	{
-		if (current.switches == 0 && current.room == 28 && !vars.splits.endgame)
-		{
-			vars.splits.endgame = true;
-			return settings["endGame"];
-		}
-	}
+    if (vars.splits.startgame)
+    {
+        if (current.switches == 0 && current.room == 28 && !vars.splits.endgame)
+        {
+            vars.splits.endgame = true;
+            return settings["endGame"];
+        }
+    }
 }
