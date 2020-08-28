@@ -54,7 +54,7 @@ split
 
 	if (vars.splits.startgame)
 	{
-		if (current.switches == 1 && current.room == 28 && !vars.splits.endgame)
+		if (current.switches == 0 && current.room == 28 && !vars.splits.endgame)
 		{
 			vars.splits.endgame = true;
 			return settings["endGame"];
