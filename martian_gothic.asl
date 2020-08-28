@@ -17,7 +17,7 @@ startup
     settings.Add("infogroup", false, "Info");
     settings.Add("infogroup1", false, "Martian Gothic: Unification Auto Splitter by Kapdap", "infogroup");
     settings.Add("infogroup2", false, "Website: https://github.com/kapdap/mgu-autosplitter", "infogroup");
-    settings.Add("infogroup3", false, "Last Update: 2020-08-27T22:45:00+1200", "infogroup");
+    settings.Add("infogroup3", false, "Last Update: 2020-08-28T19:05:00+1200", "infogroup");
 }
 
 init
