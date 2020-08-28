@@ -7,6 +7,7 @@ state("martian gothic") {}
 startup
 {
     vars.splits = new ExpandoObject();
+	vars.splits.startgame = false;
     vars.splits.endgame = false;
 
     settings.Add("events", true, "Events");
@@ -21,40 +22,42 @@ startup
 
 init
 {
-	current.screen = 0;
-	current.movie = 0;
-	current.room = 0;
-	current.endgame = 0;
+    current.room = 0;
+    current.movie = 0;
+    current.screen = 0;
+    current.switches = 0;
 }
 
 start
 {
-    return (current.screen == 2 && current.movie == 1);
+    return (current.screen == 2 && current.movie == 0 || current.movie == 1);
 }
 
 update
 {
-	current.screen = memory.ReadValue<byte>(new IntPtr(0x00752850));
-	current.movie = memory.ReadValue<byte>(new IntPtr(0x005BD008));
-	//current.room = memory.ReadValue<byte>(new IntPtr(0x005BB519));
-	current.endgame = memory.ReadValue<byte>(new IntPtr(0x005C4708));
-	
+    current.room = memory.ReadValue<byte>(new IntPtr(0x005BB519));
+    current.movie = memory.ReadValue<byte>(new IntPtr(0x005BD008));
+    current.screen = memory.ReadValue<byte>(new IntPtr(0x00752850));
+    current.switches = memory.ReadValue<byte>(new IntPtr(0x005C4708));
+
     if (timer.CurrentPhase == TimerPhase.NotRunning)
     {
+		vars.splits.startgame = false;
         vars.splits.endgame = false;
     }
 }
 
 split
 {
-    if (current.endgame == 0 && current.movie != 11 && !vars.splits.endgame)
-    {
-        vars.splits.endgame = true;
-        return settings["endGame"];
-    }
-}
+	if (!vars.splits.startgame)
+		vars.splits.startgame = current.switches == 1;
 
-isLoading
-{
-    return false;
+	if (vars.splits.startgame)
+	{
+		if (current.switches == 1 && current.room == 28 && !vars.splits.endgame)
+		{
+			vars.splits.endgame = true;
+			return settings["endGame"];
+		}
+	}
 }
