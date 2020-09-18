@@ -9,14 +9,14 @@ startup
     vars.frame = new ExpandoObject();
     vars.frame.newgame = 0;
     vars.frame.opening = 0;
-	
+    
     vars.splits = new ExpandoObject();
-    vars.splits.startgame = false;
+    vars.splits.newgame = false;
     vars.splits.endgame = false;
-	
+    
     settings.Add("events", true, "Events");
     settings.Add("endgame", true, "End Game", "events");
-	
+    
     settings.Add("timer", true, "Start Timer");
     settings.Add("newgame", true, "New Game", "timer");
     settings.SetToolTip("newgame", "Start the timer as soon as New Game is selected.");
@@ -41,23 +41,22 @@ init
 
 start
 {
-	if (settings["newgame"])
-	{
-
-		if (current.screen == 2 && (current.movie == 0 || current.movie == 1))
-		{
-			vars.frame.newgame = memory.ReadValue<int>(new IntPtr(0x005BCF64));
-			return true;
-		}
-	}
-	else
-	{
-		if (current.frames >= 20000)
-		{
-			vars.frame.newgame = memory.ReadValue<int>(new IntPtr(0x005BCF64));
-			return true;
-		}
-	}
+    if (settings["newgame"])
+    {
+        if (current.screen == 2 && (current.movie == 0 || current.movie == 1))
+        {
+            vars.frame.newgame = memory.ReadValue<int>(new IntPtr(0x005BCF64));
+            return true;
+        }
+    }
+    else
+    {
+        if (current.frames >= 20000)
+        {
+            vars.frame.newgame = memory.ReadValue<int>(new IntPtr(0x005BCF64));
+            return true;
+        }
+    }
 }
 
 update
@@ -70,20 +69,20 @@ update
 
     if (timer.CurrentPhase == TimerPhase.NotRunning)
     {
-		vars.frame.newgame = 0;
-		vars.frame.opening = 0;
-		
-        vars.splits.startgame = false;
+        vars.frame.newgame = 0;
+        vars.frame.opening = 0;
+        
+        vars.splits.newgame = false;
         vars.splits.endgame = false;
     }
 }
 
 split
 {
-    if (!vars.splits.startgame)
-        vars.splits.startgame = current.switches == 1;
+    if (!vars.splits.newgame)
+        vars.splits.newgame = current.switches == 1;
 
-    if (vars.splits.startgame)
+    if (vars.splits.newgame)
     {
         if (current.switches == 0 && current.room == 28 && !vars.splits.endgame)
         {
@@ -95,28 +94,28 @@ split
 
 gameTime
 {
-	int frames = current.frames;
-	
-	if (settings["newgame"])
-	{
-		if (current.frames < 20000)
-		{
-			vars.frame.opening = current.frames;
-			frames -= vars.frame.newgame;
-		}
-		else if (current.frames >= 20000)
-		{
-			frames -= 20000;
-			frames += vars.frame.opening - vars.frame.newgame;
-		}
-	}
-	else
-	{
-		frames -= 20000;
-		frames += 6; // Syncs with Real Time
-	}
-	
-	return TimeSpan.FromSeconds(frames / 30.0);
+    int frames = current.frames;
+    
+    if (settings["newgame"])
+    {
+        if (current.frames < 20000)
+        {
+            vars.frame.opening = current.frames;
+            frames -= vars.frame.newgame;
+        }
+        else if (current.frames >= 20000)
+        {
+            frames -= 20000;
+            frames += vars.frame.opening - vars.frame.newgame;
+        }
+    }
+    else
+    {
+        frames -= 20000;
+        frames += 6; // Syncs with Real Time
+    }
+    
+    return TimeSpan.FromSeconds(frames / 30.0);
 }
 
 isLoading
